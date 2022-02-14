@@ -122,7 +122,7 @@ RectTransform:
   m_GameObject: {fileID: 558755989748638860}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.59}
-  m_LocalScale: {x: 5.961033, y: 1.6313589, z: 0.35658827}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6719478041586069392}
   m_Father: {fileID: 558755990545721815}
@@ -130,8 +130,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -2.318, y: -2.64}
-  m_SizeDelta: {x: 0.79787767, y: 1.7666123}
+  m_AnchoredPosition: {x: -2.29, y: -2.64}
+  m_SizeDelta: {x: 4.760798, y: 3.0710366}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &558755989748638856
 Canvas:
@@ -175,7 +175,7 @@ MonoBehaviour:
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
-  m_DynamicPixelsPerUnit: 2000
+  m_DynamicPixelsPerUnit: 250
 --- !u!114 &558755989748638862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -523,7 +523,7 @@ RectTransform:
   m_GameObject: {fileID: 3801264764314846204}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.59}
-  m_LocalScale: {x: 5.961033, y: 1.6313589, z: 0.35658827}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1811871056449234192}
   m_Father: {fileID: 3801264763535462055}
@@ -532,7 +532,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: -3.85, y: -2.64}
-  m_SizeDelta: {x: 0.8045466, y: 1.7666123}
+  m_SizeDelta: {x: 4.760798, y: 3.0710366}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &3801264764314846200
 Canvas:
@@ -576,7 +576,7 @@ MonoBehaviour:
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
-  m_DynamicPixelsPerUnit: 2000
+  m_DynamicPixelsPerUnit: 250
 --- !u!114 &3801264764314846206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -856,15 +856,15 @@ RectTransform:
   m_GameObject: {fileID: 4701951974150181276}
   m_LocalRotation: {x: -0.0000001490116, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 3, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 558755989748638863}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -0.009052396, y: -1.195673}
+  m_AnchoredPosition: {x: 0, y: -0.003000021}
+  m_SizeDelta: {x: -0.009052277, y: -0.025584698}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3801409791275569893
 CanvasRenderer:
@@ -906,7 +906,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SUPER BOOST
+  m_Text: +1
 --- !u!114 &1862391786109873827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -920,7 +920,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
-  m_EffectDistance: {x: 0.01, y: 0.01}
+  m_EffectDistance: {x: 0.05, y: 0.05}
   m_UseGraphicAlpha: 1
 --- !u!1 &6749074323309108540
 GameObject:
@@ -950,15 +950,15 @@ RectTransform:
   m_GameObject: {fileID: 6749074323309108540}
   m_LocalRotation: {x: -0.0000001490116, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 3, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3801264764314846207}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -0.015721321, y: -1.195673}
+  m_AnchoredPosition: {x: 0, y: 0.003000021}
+  m_SizeDelta: {x: -0.015721321, y: -0.025584698}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6590253067239115536
 CanvasRenderer:
@@ -1000,7 +1000,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SUPER BOOST
+  m_Text: +1
 --- !u!114 &3595759210032856217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1014,5 +1014,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
-  m_EffectDistance: {x: 0.01, y: 0.01}
+  m_EffectDistance: {x: 0.05, y: 0.05}
   m_UseGraphicAlpha: 1

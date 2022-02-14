@@ -1135,7 +1135,7 @@ PrefabInstance:
     - target: {fileID: 4104290702349047020, guid: c5a7e9ead4c58bb4796958e386f3fcf1,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0325797
+      value: 1.4927899
       objectReference: {fileID: 0}
     - target: {fileID: 4104290702349047020, guid: c5a7e9ead4c58bb4796958e386f3fcf1,
         type: 3}
@@ -1145,12 +1145,17 @@ PrefabInstance:
     - target: {fileID: 4104290702349047020, guid: c5a7e9ead4c58bb4796958e386f3fcf1,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5.589
+      value: -5.359
       objectReference: {fileID: 0}
     - target: {fileID: 4104290702349047020, guid: c5a7e9ead4c58bb4796958e386f3fcf1,
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 53.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 7300026110569667468, guid: c5a7e9ead4c58bb4796958e386f3fcf1,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7300026110569667470, guid: c5a7e9ead4c58bb4796958e386f3fcf1,
         type: 3}
@@ -1180,7 +1185,7 @@ PrefabInstance:
     - target: {fileID: 7709388139086860195, guid: c5a7e9ead4c58bb4796958e386f3fcf1,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0325797
+      value: 1.4927899
       objectReference: {fileID: 0}
     - target: {fileID: 7709388139086860195, guid: c5a7e9ead4c58bb4796958e386f3fcf1,
         type: 3}
@@ -1190,7 +1195,7 @@ PrefabInstance:
     - target: {fileID: 7709388139086860195, guid: c5a7e9ead4c58bb4796958e386f3fcf1,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5.589
+      value: -5.359
       objectReference: {fileID: 0}
     - target: {fileID: 7709388139086860195, guid: c5a7e9ead4c58bb4796958e386f3fcf1,
         type: 3}
@@ -1276,13 +1281,6 @@ PrefabInstance:
         type: 3}
       propertyPath: booster.likeBooster
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7560277898972333503, guid: 1c3e8197ae4accb469cee2373ec35265,
-        type: 3}
-      propertyPath: m_Text
-      value: 'SUPER
-
-        BOOST'
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1c3e8197ae4accb469cee2373ec35265, type: 3}
