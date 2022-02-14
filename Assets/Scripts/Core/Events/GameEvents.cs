@@ -20,8 +20,8 @@ namespace GameEvents
 
     public sealed class OnLikeEnterEnemyEvent 
     {
-        public LikeController likeController;
-        public DislikeController dislikeController;
+        public int likeControllerCount;
+        public int dislikeControllerCount;
     }
 
     public sealed class OnEnemyGroupDieEvent 

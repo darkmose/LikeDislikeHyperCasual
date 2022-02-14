@@ -311,6 +311,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _dislikeCount: 5
   _dislikeCountText: {fileID: 1531394811754918459}
+  _testDislike: 1
 --- !u!136 &5156116548531293083
 CapsuleCollider:
   m_ObjectHideFlags: 0

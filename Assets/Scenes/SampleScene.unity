@@ -128,6 +128,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 535403804456727601, guid: c3200a326e2e6f240a59cadf5c42c927,
+        type: 3}
+      propertyPath: _testDislike
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2321605956169908520, guid: c3200a326e2e6f240a59cadf5c42c927,
+        type: 3}
+      propertyPath: _testDislike
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3221179871865679720, guid: c3200a326e2e6f240a59cadf5c42c927,
         type: 3}
       propertyPath: m_Name
@@ -2476,7 +2486,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1756189419}
   - component: {fileID: 1756189421}
-  - component: {fileID: 1756189420}
   m_Layer: 0
   m_Name: LikeCamera
   m_TagString: Untagged
@@ -2498,14 +2507,6 @@ Transform:
   m_Father: {fileID: 1197397846}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!81 &1756189420
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1756189418}
-  m_Enabled: 1
 --- !u!20 &1756189421
 Camera:
   m_ObjectHideFlags: 0

@@ -9,7 +9,7 @@ public class CameraMovement : MonoBehaviour
     {
         if (GameModeHandler.CurrentState == States.Run)
         {
-            _moveOffset.z = Time.deltaTime * Constants.PlayerSpeed;
+            _moveOffset.z = Time.fixedDeltaTime * Constants.PlayerSpeed;
             transform.position += _moveOffset;
         }
     }

@@ -12,8 +12,10 @@ public class LikeController : MonoBehaviour
         {
             if(other.TryGetComponent(out DislikeController dislikeController))
             {
-                _onLikeEnterEnemyEvent.likeController = this;
-                _onLikeEnterEnemyEvent.dislikeController = dislikeController;
+                var dContainer = dislikeController.transform.parent.GetComponent<DislikeContainer>();
+                var lContainer = transform.parent.GetComponent<LikesContainer>();
+                _onLikeEnterEnemyEvent.likeControllerCount = lContainer.LikesCount;
+                _onLikeEnterEnemyEvent.dislikeControllerCount = dContainer.DislikesCount;
                 EventsAgregator.Post<OnLikeEnterEnemyEvent>(this, _onLikeEnterEnemyEvent);
             }
 

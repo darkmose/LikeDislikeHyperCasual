@@ -64,10 +64,7 @@ public class LikeGroupController : MonoBehaviour
     {
         if (_actions.ContainsKey(GameModeHandler.CurrentState))
         {
-            //DOTween.Sequence().AppendInterval(Constants.GamemodeSwitchDelaySeconds).OnComplete(() => 
-            //{
-                _currentAction = _actions[GameModeHandler.CurrentState];
-            //});
+            _currentAction = _actions[GameModeHandler.CurrentState];
         }
         else
         {
@@ -77,20 +74,6 @@ public class LikeGroupController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //if (other.CompareTag(Constants.FightEnterTagName))
-        //{
-        //    var endValue = _leftMovementBorder / 2;
-        //    DOTween.To(() => _leftMovementBorder, value => _leftMovementBorder = value, endValue, 2);
-        //    endValue = _rightMovementBorder / 2;
-        //    DOTween.To(() => _rightMovementBorder, value => _rightMovementBorder = value, endValue, 2);
-        //}
-        //else if (other.CompareTag(Constants.FightExitTagName))
-        //{
-        //    var endValue = _leftMovementBorder * 2;
-        //    DOTween.To(() => _leftMovementBorder, value => _leftMovementBorder = value, endValue, 2);
-        //    endValue = _rightMovementBorder * 2;
-        //    DOTween.To(() => _rightMovementBorder, value => _rightMovementBorder = value, endValue, 2);
-        //}
         if (other.CompareTag(Constants.EnemyTagName))
         {
             GameModeHandler.SetState(States.Fight);
@@ -98,7 +81,6 @@ public class LikeGroupController : MonoBehaviour
             {
                 _likesContainer.SendToFight(dislikeContainer);
             }
-
         }
         if (other.CompareTag(Constants.GateTagName))
         {
