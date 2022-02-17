@@ -13,6 +13,11 @@ namespace GameEvents
     {
     }
 
+    public sealed class OnNextLevelEvent
+    {
+        public int CurrentLevelIndex;
+    }
+
     public sealed class OnGameStateChangedEvent
     {
     }

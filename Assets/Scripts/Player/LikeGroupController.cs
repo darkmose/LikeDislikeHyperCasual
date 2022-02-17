@@ -78,7 +78,7 @@ public class LikeGroupController : MonoBehaviour
     {
         switch (GameStatesHandler.CurrentState) //Entry Point
         {
-            case States.Finish:
+            case States.Separate:
                 var pos = transform.position;
                 pos.x = _startPosX;
                 transform.position = pos;
@@ -86,6 +86,9 @@ public class LikeGroupController : MonoBehaviour
                 pos.x = _startPosX;
                 Camera.main.transform.position = pos;
                 _likesContainer.SeparateMainLike();
+                break;
+            case States.Finish:
+
                 break;
         }
 

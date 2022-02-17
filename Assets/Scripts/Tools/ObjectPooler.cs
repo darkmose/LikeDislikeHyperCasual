@@ -26,7 +26,19 @@ public class ObjectPooler
         public string tag;
         public GameObject prefab;
         public int size;
-    }   
+    }
+
+    public void ReturnObjects()
+    {
+        foreach (var pool in _poolDictionary)
+        {
+            foreach (var obj in pool.Value)
+            {
+                obj.SetActive(false);
+                obj.transform.SetParent(rootOfPooledGameobjects);
+            }
+        }
+    }
 
     public GameObject GetPooledGameObject(string tag)
     {

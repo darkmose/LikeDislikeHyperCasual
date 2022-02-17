@@ -142,22 +142,15 @@ public class LikesContainer : MonoBehaviour
 
     public void SeparateMainLike() 
     {
-        if (_mainLike != null)
+        _likeCountCanvas.enabled = false;
+
+        _mainLike.PlaySeparateAnimation();
+        DOTween.Sequence().AppendInterval(Constants.SecondsToSeparateLike).OnComplete(() =>
         {
-            GameStatesHandler.SetState(States.NullState);
-            _likeCountCanvas.enabled = false;
-
-            _mainLike.PlaySeparateAnimation();
-            DOTween.Sequence().AppendInterval(Constants.SecondsToSeparateLike).OnComplete(() =>
-            {
-                _mainLike.gameObject.SetActive(false);
-                _mainLike.transform.SetParent(PooledSkinManager.PooledObjectRoot);
-                _mainLike = null;
-                SeparateLikesSphere();
-                GameStatesHandler.SetState(States.Finish);                
-            });
-        }
-
+            _mainLike.gameObject.SetActive(false);
+            _mainLike.transform.SetParent(PooledSkinManager.PooledObjectRoot);
+            SeparateLikesSphere();               
+        });  
     }
 
     private void SeparateLikesSphere() 
@@ -177,7 +170,7 @@ public class LikesContainer : MonoBehaviour
                 _separateOffset.y += 1.5f;
                 controller.transform.localPosition = _separateOffset;
                 controller.transform.localScale = Vector3.one * SeparateLikeSize;
-                controller.transform.DOMove(transform.position + _separateOffset, Constants.SecondsToSeparateLike);
+                controller.transform.DOMove(transform.position + _separateOffset, Constants.SecondsToGoBase);
                 if (controller.TryGetComponent(out SphereCollider sphereCollider))
                 {
                     sphereCollider.enabled = true;
@@ -194,17 +187,21 @@ public class LikesContainer : MonoBehaviour
                 _separateOffset = Random.onUnitSphere * (NormalSpawnRadius + (LikesCount * SeparateSpawnRadiusScale));
                 _separateOffset.z = 0f;
                 _separateOffset.x *= 15f / (float)LikesCount;
-                _separateOffset.y *= 15f / (float)LikesCount;
-                _separateOffset.y += 1.5f;
+                _separateOffset.y *= 10f / (float)LikesCount;
+                _separateOffset.y += 1f;
                 controller.transform.localPosition = _separateOffset;
                 controller.transform.localScale = Vector3.one * SeparateLikeSize;
-                controller.transform.DOMove(transform.position + _separateOffset, Constants.SecondsToSeparateLike);
+                controller.transform.DOMove(transform.position + _separateOffset, Constants.SecondsToGoBase);
                 if (controller.TryGetComponent(out SphereCollider sphereCollider))
                 {
                     sphereCollider.enabled = true;
                 }
             }
         }
+        DOTween.Sequence().AppendInterval(Constants.SecondsToGoBase).OnComplete(()=> 
+        {
+            GameStatesHandler.SetState(States.Finish);
+        });
     }
 
     #endregion

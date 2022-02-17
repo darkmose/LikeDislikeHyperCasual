@@ -20,7 +20,7 @@ public class PooledSkinManager : MonoBehaviour
         PrepareObjectPooler();
     }
 
-    private void PrepareObjectPooler() 
+    private void PrepareObjectPooler()
     {
         _objectPooler = new ObjectPooler(this.transform, true, Constants.DefaultDynamicExtendCount);
 
@@ -31,6 +31,10 @@ public class PooledSkinManager : MonoBehaviour
         }
     }
 
+    public static void ReturnAllObjectsInPool()
+    {
+        _innerInstance._objectPooler.ReturnObjects();
+    }
 
     public static GameObject GetLikeSkinPrefab(LikeType type, LikeSkin skin)
     {

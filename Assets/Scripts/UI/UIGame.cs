@@ -11,16 +11,23 @@ public class UIGame : MonoBehaviour
     [SerializeField] private Text _currentLevelText;
     [SerializeField] private GameObject _tutorialScreen;
     [SerializeField] private Button _tutorialStartButton;
+    private LevelController _levelController;
 
     private void Awake()
     {
         EventsAgregator.Subscribe<OnLevelProgressChangedEvent>(OnLevelProgressChangedHandler);
+        EventsAgregator.Subscribe<OnNextLevelEvent>(OnNextLevelHandler);
         _tutorialStartButton.onClick.AddListener(OnTutorialStartButtonClickHandler);
+        _levelController = ServiceLocator.Resolve<LevelController>();
+    }
+
+    private void OnNextLevelHandler(object sender, OnNextLevelEvent data)
+    {
+        _currentLevelText.text = (data.CurrentLevelIndex + 1).ToString();
     }
 
     private void OnTutorialStartButtonClickHandler()
     {
-        Debug.Log("[OnTutorialStartButtonClickHandler]");
         _tutorialScreen.SetActive(false);
         GameStatesHandler.SetState(States.Run);
     }

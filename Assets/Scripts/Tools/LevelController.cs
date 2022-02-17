@@ -15,10 +15,39 @@ public class LevelController : MonoBehaviour
     private WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
     private OnLevelProgressChangedEvent _onLevelProgressChangedEvent = new OnLevelProgressChangedEvent();
     private OnLevelFinishEvent _onLevelFinish = new OnLevelFinishEvent();
+    private OnNextLevelEvent _onNextLevelEvent = new OnNextLevelEvent();
     private void Awake()
     {
         ServiceLocator.Register<LevelController>(this);
         LoadStartLevel();
+    }
+
+    public void LoadNextLevel() 
+    {
+        if (CurrentLevel < _levelList.Count - 1)
+        {
+            PooledSkinManager.ReturnAllObjectsInPool();
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                Destroy(transform.GetChild(0).gameObject);
+            }
+            CurrentLevel++;
+            PlayerPrefs.SetInt(Constants.PrefsLevelProgressKey, CurrentLevel);
+            var level = Instantiate(_levelList[CurrentLevel]);
+            level.transform.SetParent(transform);
+
+            PrepareLevelProgressCheck();
+            StartCoroutine(CheckLevelProgress());
+
+            _onNextLevelEvent.CurrentLevelIndex = CurrentLevel;
+            EventsAgregator.Post<OnNextLevelEvent>(this, _onNextLevelEvent);
+            GameStatesHandler.SetState(States.Entry);
+        }
+        else
+        {
+            Debug.LogWarning($"Level {CurrentLevel + 1} doesn't exist");
+        }
+
     }
 
     private void LoadStartLevel()
@@ -30,6 +59,7 @@ public class LevelController : MonoBehaviour
         CurrentLevel = PlayerPrefs.GetInt(Constants.PrefsLevelProgressKey);
 
         var level = Instantiate(_levelList[CurrentLevel]);
+        level.transform.SetParent(transform);
         PrepareLevelProgressCheck();
         StartCoroutine(CheckLevelProgress());
 
@@ -44,14 +74,17 @@ public class LevelController : MonoBehaviour
         {
             _startPosZ = playerObject.transform.position.z;
             _player = playerObject.transform;
+            Debug.Log("PrepareLevelProgressCheck OK");
         }
-
         var finishObj = GameObject.FindGameObjectWithTag(Constants.FinishTag);
         if (!System.Object.ReferenceEquals(finishObj, null))
         {
             _finishPosZ = finishObj.transform.position.z;
+            Debug.Log("PrepareLevelProgressCheck OK");
         }
         _distance = _finishPosZ - _startPosZ;
+        Debug.Log($"Distance: {_distance}");
+        _isFinished = false;
     }
 
     private IEnumerator CheckLevelProgress()
@@ -66,7 +99,7 @@ public class LevelController : MonoBehaviour
                 _onLevelProgressChangedEvent.LevelProgress = 1f;
                 EventsAgregator.Post<OnLevelFinishEvent>(this, _onLevelFinish);
                 _isFinished = true;
-                GameStatesHandler.SetState(States.Finish);
+                GameStatesHandler.SetState(States.Separate);
             }
         }
     }

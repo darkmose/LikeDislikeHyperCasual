@@ -28,12 +28,13 @@ public class CameraMovement : MonoBehaviour
     {
         switch (GameStatesHandler.CurrentState) //Entry Point
         {
-            case States.Finish:
+            case States.Separate:
                 var pos = transform.position;
                 pos.y += 1f;
                 pos.z -= 2f;
-                transform.position = pos;
-                transform.Rotate(15f, 0f, 0f);
+                var rotate = new Vector3(15, 0, 0);
+                transform.DOMove(pos, Constants.SecondsToSeparateLike);
+                transform.DORotate(rotate, Constants.SecondsToSeparateLike);
                 break;
         }
         if (_actions.ContainsKey(GameStatesHandler.CurrentState))

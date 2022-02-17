@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GameEvents;
 
-public enum States { Entry, Run, Fight, Finish, Lose, Win, NullState }
+public enum States { Entry, Run, Fight, Finish, Lose, Win, Separate }
 
 public static class GameStatesHandler 
 {

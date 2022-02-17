@@ -27,7 +27,7 @@ public static class Constants
     public const string IntenseLightLayerName = "IntenseLightEffect";
     public const string DefaultLayerName = "Default";
     public const float SecondsToGoFight = 1f;
-    public const float SecondsToGoBase = 1f;
+    public const float SecondsToGoBase = .3f;
     public const float SecondsForCinematicCamera = .5f;
     public const float SecondsToLightPlatform = .3f;
     public const float SecondsToSeparateLike = 1f;
