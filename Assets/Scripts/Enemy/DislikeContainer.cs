@@ -7,100 +7,113 @@ using UnityEngine.UI;
 
 public class DislikeContainer : MonoBehaviour
 {
+    #region CONST
     private const int NormalSpawnRadius = 1;
     private const float SpawnRadiusScale = 0.01f;
-    private const int SecondsToGoFight = 1;
-
-    [Tooltip("Count of enemies")]
-    [SerializeField] private int _dislikeCount;
-    [SerializeField] private Text _dislikeCountText;
-
-
-    private List<DislikeController> _dislikes;
-    public int DislikesCount => _dislikes.Count;
-    private WaitForSeconds _waitForSeconds = new WaitForSeconds(Constants.CoroutineUltraFastProcess);
-    private OnEnemyGroupDieEvent _onEnemyGroupDieEvent = new OnEnemyGroupDieEvent();
-
-    #region TEST
-    private DislikeController _testDislikeController;    
     #endregion
 
-    private void Awake()
+    #region FIELDS
+    [Tooltip("Count of enemies")]
+    [SerializeField] private int _startDislikeCount;
+    [SerializeField] private Text _dislikeCountText;
+    private WaitForSeconds _waitForSeconds = new WaitForSeconds(Constants.CoroutineUltraFastProcess);
+    private OnEnemyGroupDieEvent _onEnemyGroupDieEvent = new OnEnemyGroupDieEvent();
+    private DislikeController _mainDislike;
+    private int _dislikesCount;
+    public int DislikesCount
     {
-        EventsAgregator.Subscribe<OnLikeEnterEnemyEvent>(OnLikeEnterEnemyHandler);
-        PrepareDislikeList();
+        get
+        {
+            return _dislikesCount;
+        }
+        private set
+        {
+            _dislikesCount = value;
+            _dislikeCountText.text = _dislikesCount.ToString();
+        }
+    }
 
-        CreateDislike(_dislikeCount);
+    #endregion
+
+
+    [ContextMenu("TEST")]
+    public void Test() {
+        Debug.Log($"DislikeCount: {DislikesCount}");
     }
 
 
-    private void OnLikeEnterEnemyHandler(object sender, OnLikeEnterEnemyEvent data)
+    #region Awake/Start
+    private void Start()
     {
-        RemoveDislikes(data.likeControllerCount);
+        CreateDislike(_startDislikeCount);
     }
+    #endregion
 
-
-    private void PrepareDislikeList() 
-    {
-        _dislikes = new List<DislikeController>();
-    }
-
-
-
+    #region CREATE DISLIKE
     private void CreateDislike(int count) 
     {
-        _testDislikeController = Factory.AbstractFactory.CreateDislikeController(Factory.LikeSkin.Common);
-        _dislikes.Add(_testDislikeController);
-        _testDislikeController.transform.SetParent(transform);
-        _testDislikeController.transform.localPosition = Vector3.zero;
-        _testDislikeController.transform.localScale = Vector3.one * (NormalSpawnRadius + (DislikesCount * SpawnRadiusScale));
-        _dislikeCountText.text = DislikesCount.ToString();
+        _mainDislike = Factory.AbstractFactory.CreateDislikeController(Factory.LikeSkin.Common);
+        DislikesCount++;
+        _mainDislike.transform.SetParent(transform);
+        _mainDislike.transform.localPosition = Vector3.zero;
+        _mainDislike.transform.localScale = Vector3.one * (NormalSpawnRadius + (DislikesCount * SpawnRadiusScale));
 
         for (int i = 1; i < count; i++)
         {
-            var dislike = new DislikeController();
-            _dislikes.Add(dislike);
-            _testDislikeController.transform.localScale = Vector3.one * (NormalSpawnRadius + (DislikesCount * SpawnRadiusScale));
-            _dislikeCountText.text = DislikesCount.ToString();
+            DislikesCount++;            
+            _mainDislike.transform.localScale = Vector3.one * (NormalSpawnRadius + (DislikesCount * SpawnRadiusScale));
         }
 
     }
+    #endregion
 
+    #region REMOVE DISLIKE
     private IEnumerator RemoveDislike(int count) 
     {
-        for (int i = 0; i < count; i++)
+        if (count >= DislikesCount)
         {
-            if (DislikesCount > 1)
+            var cnt = DislikesCount - 1;
+            for (int i = 0; i < cnt; i++)
             {
-                _dislikes.RemoveAt(1);
-                _testDislikeController.transform.localScale = Vector3.one * (NormalSpawnRadius + (DislikesCount * SpawnRadiusScale));
-                _dislikeCountText.text = DislikesCount.ToString();
+                DislikesCount--;
+                _mainDislike.transform.localScale = Vector3.one * (NormalSpawnRadius + (DislikesCount * SpawnRadiusScale));
+                yield return _waitForSeconds;
             }
-            else
-            {
-                _dislikes.Remove(_testDislikeController);
-                _testDislikeController.transform.SetParent(PooledSkinManager.PooledObjectRoot);
-                _testDislikeController.gameObject.SetActive(false);
-                _testDislikeController.transform.localScale = Vector3.one * (NormalSpawnRadius + (DislikesCount * SpawnRadiusScale));
-                _dislikeCountText.text = DislikesCount.ToString();
-
-                EventsAgregator.Post<OnEnemyGroupDieEvent>(this, _onEnemyGroupDieEvent);
-                this.gameObject.SetActive(false);
-            }
-            yield return _waitForSeconds;
+            DislikesCount--;
+            _mainDislike.transform.SetParent(PooledSkinManager.PooledObjectRoot);
+            _mainDislike.gameObject.SetActive(false);
+            EventsAgregator.Post<OnEnemyGroupDieEvent>(this, _onEnemyGroupDieEvent);
+            this.gameObject.SetActive(false);
         }
-
+        else
+        {
+            for (int i = 0; i < count; i++)
+            {
+                DislikesCount--;
+                _mainDislike.transform.localScale = Vector3.one * (NormalSpawnRadius + (DislikesCount * SpawnRadiusScale));
+                yield return _waitForSeconds;
+            }
+        }
     }
 
     public void RemoveDislikes(int count)
     {
         StartCoroutine(RemoveDislike(count));                
     }
+    #endregion
 
+    #region DISLIKE MOVEMENT
     public void SendToFight(Vector3 fightPoint)
     {
-        _testDislikeController.transform.DOMove(fightPoint, SecondsToGoFight);
+        _mainDislike.transform.DOMove(fightPoint, Constants.SecondsToGoFight);
     }
+    #endregion
 
+    #region UNITY EVENTS
+    private void OnDestroy()
+    {
+        StopAllCoroutines();
+    }
+    #endregion
 
 }

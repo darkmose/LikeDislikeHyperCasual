@@ -22,13 +22,13 @@ public class UIGame : MonoBehaviour
     {
         Debug.Log("[OnTutorialStartButtonClickHandler]");
         _tutorialScreen.SetActive(false);
-        GameModeHandler.SetState(States.Run);
+        GameStatesHandler.SetState(States.Run);
     }
 
 
     private void Start()
     {
-        _currentLevelText.text = $"Level {ServiceLocator.Resolve<LevelController>().CurrentLevel +1}";
+        _currentLevelText.text = $"{ServiceLocator.Resolve<LevelController>().CurrentLevel +1}";
     }
 
     private void OnLevelProgressChangedHandler(object sender, OnLevelProgressChangedEvent data)

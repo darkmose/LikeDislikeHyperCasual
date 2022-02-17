@@ -1,16 +1,78 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GameEvents;
+using System;
+using DG.Tweening;
 
 public class CameraMovement : MonoBehaviour
 {
+    private float _speedAcceleration = 1f;
     private Vector3 _moveOffset = Vector3.zero;
-    private void FixedUpdate()
+    private Dictionary<States, System.Action> _actions = new Dictionary<States, System.Action>();
+    private System.Action _currentAction;
+
+    #region Awake/Start
+
+    private void Awake()
     {
-        if (GameModeHandler.CurrentState == States.Run)
+        EventsAgregator.Subscribe<OnGameStateChangedEvent>(OnGameModeChangedHandler);
+        _actions.Add(States.Run, RunAction);
+        _actions.Add(States.Finish, FinishAction);
+    }
+    #endregion
+
+    #region EVENT BASED
+
+    private void OnGameModeChangedHandler(object sender, OnGameStateChangedEvent data)
+    {
+        switch (GameStatesHandler.CurrentState) //Entry Point
         {
-            _moveOffset.z = Time.fixedDeltaTime * Constants.PlayerSpeed;
-            transform.position += _moveOffset;
+            case States.Finish:
+                var pos = transform.position;
+                pos.y += 1f;
+                pos.z -= 2f;
+                transform.position = pos;
+                transform.Rotate(15f, 0f, 0f);
+                break;
+        }
+        if (_actions.ContainsKey(GameStatesHandler.CurrentState))
+        {
+            _currentAction = _actions[GameStatesHandler.CurrentState];
+        }
+        else
+        {
+            _currentAction = NullAction;
         }
     }
+
+    #endregion
+
+    #region ACTIONS
+
+    private void NullAction() 
+    { }
+
+    private void FinishAction() 
+    {
+        _moveOffset.z = Time.fixedDeltaTime * Constants.PlayerFinishSpeed * _speedAcceleration;
+        transform.position += _moveOffset;
+        _speedAcceleration += Constants.PlayerSpeedAcceleration;
+
+    }
+
+    private void RunAction() 
+    {
+        _moveOffset.z = Time.fixedDeltaTime * Constants.PlayerSpeed;
+        transform.position += _moveOffset;
+    }
+
+    #endregion
+
+    #region UPDATES
+    private void FixedUpdate()
+    {
+        _currentAction?.Invoke();
+    }
+    #endregion
 }

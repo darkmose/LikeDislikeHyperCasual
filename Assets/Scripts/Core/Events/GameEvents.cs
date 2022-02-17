@@ -13,15 +13,8 @@ namespace GameEvents
     {
     }
 
-    public sealed class OnGameModeChangedEvent
+    public sealed class OnGameStateChangedEvent
     {
-    }
-
-
-    public sealed class OnLikeEnterEnemyEvent 
-    {
-        public int likeControllerCount;
-        public int dislikeControllerCount;
     }
 
     public sealed class OnEnemyGroupDieEvent 
@@ -32,6 +25,9 @@ namespace GameEvents
     public sealed class OnEndGameEvent 
     {
         
+    }
+    public sealed class OnLikePhotoEvent 
+    {
     }
 
 

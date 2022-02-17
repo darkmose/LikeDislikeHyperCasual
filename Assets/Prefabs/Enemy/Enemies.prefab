@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 568558494687482444}
   m_LocalRotation: {x: 0.70710707, y: -0, z: -0, w: 0.70710653}
-  m_LocalPosition: {x: 0, y: -0.54, z: 0}
+  m_LocalPosition: {x: 0, y: -2.14, z: -0}
   m_LocalScale: {x: 8.984672, y: 8.984672, z: 8.984672}
   m_Children: []
   m_Father: {fileID: 1531394812013153157}
@@ -309,9 +309,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d6c9c92e009274ea8338af1708fef4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dislikeCount: 5
+  _startDislikeCount: 0
   _dislikeCountText: {fileID: 1531394811754918459}
-  _testDislike: 1
 --- !u!136 &5156116548531293083
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -325,7 +324,7 @@ CapsuleCollider:
   m_Radius: 4.42
   m_Height: 1
   m_Direction: 1
-  m_Center: {x: 0, y: -0.44, z: 0}
+  m_Center: {x: 0, y: -2.14, z: 0}
 --- !u!1 &1531394812213056836
 GameObject:
   m_ObjectHideFlags: 0
@@ -399,7 +398,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_UiScaleMode: 0
-  m_ReferencePixelsPerUnit: 10
+  m_ReferencePixelsPerUnit: 4
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0

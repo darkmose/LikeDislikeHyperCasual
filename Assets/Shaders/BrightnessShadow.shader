@@ -1,4 +1,4 @@
-Shader "Custom/ColorAdjustEffect"
+Shader "Custom/ColorAdjustEffectShadow"
 {
     Properties
     {

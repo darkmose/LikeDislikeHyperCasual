@@ -7,37 +7,42 @@ using DG.Tweening;
 public class LikeGroupController : MonoBehaviour
 {
     #region CONST FIELDS
-    private const float PositionBorderOffset = 4.8f;
+    private const float PositionBorderOffset = 3.5f;
     #endregion
 
     #region FIELDS
     [SerializeField] private LikesContainer _likesContainer;
     private UIControl _uIControl;
 
-    private Dictionary<States, System.Action> _actions = new Dictionary<States, Action>();
+    private Dictionary<States, System.Action> _actions = new Dictionary<States, System.Action>();
     private System.Action _currentAction;
 
     private Vector3 _movementOffset = Vector3.zero;
     private Vector3 _newPosition = Vector3.zero;
+    private float _startPosX;
     private float _rightMovementBorder;
     private float _leftMovementBorder;
+    private float _speedAcceleration = 1f;
+    private DislikeContainer _dislikeContainer;
     #endregion
 
     #region Awake/Start
 
     private void Awake()
     {
-        _actions.Add(States.Run, MoveAction);
+        _actions.Add(States.Run, RunAction);
+        _actions.Add(States.Finish, FinishAction);
     }
 
     private void Start()
     {
         _uIControl = ServiceLocator.Resolve<UIControl>();
+        _startPosX = transform.position.x; 
         _leftMovementBorder = transform.position.x - PositionBorderOffset;
         _rightMovementBorder = transform.position.x + PositionBorderOffset;
-        _likesContainer.CreateLike();
-        EventsAgregator.Subscribe<OnGameModeChangedEvent>(OnGameModeChangedHandler);
-        GameModeHandler.SetState(States.Entry);
+        _likesContainer.CreateFirstLike();
+        EventsAgregator.Subscribe<OnGameStateChangedEvent>(OnGameModeChangedHandler);
+        GameStatesHandler.SetState(States.Entry);
     }
     #endregion
 
@@ -48,7 +53,16 @@ public class LikeGroupController : MonoBehaviour
         //Do nothing
     }
 
-    private void MoveAction()
+    private void FinishAction() 
+    {
+        _movementOffset.z = Time.deltaTime * Constants.PlayerFinishSpeed * _speedAcceleration;
+        _newPosition = transform.position + _movementOffset;
+        _newPosition.x = Mathf.Clamp(_newPosition.x, _leftMovementBorder, _rightMovementBorder);
+        transform.position = _newPosition;
+        _speedAcceleration += Constants.PlayerSpeedAcceleration;
+    }
+
+    private void RunAction()
     {
         _movementOffset.z = Time.deltaTime * Constants.PlayerSpeed;
         _movementOffset.x = _uIControl.DeltaX;
@@ -60,26 +74,56 @@ public class LikeGroupController : MonoBehaviour
     #endregion
 
     #region EVENT BASED
-    private void OnGameModeChangedHandler(object sender, OnGameModeChangedEvent data)
+    private void OnGameModeChangedHandler(object sender, OnGameStateChangedEvent data)
     {
-        if (_actions.ContainsKey(GameModeHandler.CurrentState))
+        switch (GameStatesHandler.CurrentState) //Entry Point
         {
-            _currentAction = _actions[GameModeHandler.CurrentState];
+            case States.Finish:
+                var pos = transform.position;
+                pos.x = _startPosX;
+                transform.position = pos;
+                pos = Camera.main.transform.position;
+                pos.x = _startPosX;
+                Camera.main.transform.position = pos;
+                _likesContainer.SeparateMainLike();
+                break;
+        }
+
+        if (_actions.ContainsKey(GameStatesHandler.CurrentState))
+        {
+            _currentAction = _actions[GameStatesHandler.CurrentState];
         }
         else
         {
             _currentAction = DefaultNullAction;
         }
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.CompareTag(Constants.WinTagName))
+        {
+            StopAllCoroutines();
+            GameStatesHandler.SetState(States.Win);
+        }
+        if (other.CompareTag(Constants.DislikeTagName))
+        {
+            var likeCount = _likesContainer.LikesCount;
+            var dislikeCount = _dislikeContainer.DislikesCount;
+            _dislikeContainer.RemoveDislikes(likeCount);
+            _likesContainer.RemoveLike(dislikeCount);
+        }
         if (other.CompareTag(Constants.EnemyTagName))
         {
-            GameModeHandler.SetState(States.Fight);
+            GameStatesHandler.SetState(States.Fight);
             if (other.TryGetComponent(out DislikeContainer dislikeContainer))
             {
-                _likesContainer.SendToFight(dislikeContainer);
+                var point = other.ClosestPoint(transform.position);
+                _dislikeContainer = dislikeContainer;
+
+                _dislikeContainer.SendToFight(point);
+                _likesContainer.MoveToFight(point);
             }
         }
         if (other.CompareTag(Constants.GateTagName))
@@ -95,22 +139,22 @@ public class LikeGroupController : MonoBehaviour
                         {
                             case Booster.LikeBoosters.Plus10:
                                 { 
-                                    _likesContainer.CreateLike(10);
+                                    _likesContainer.CreateLikes(10);
                                 }
                                 break;
                             case Booster.LikeBoosters.Plus20:
                                 {
-                                    _likesContainer.CreateLike(20);
+                                    _likesContainer.CreateLikes(20);
                                 }
                                 break;
                             case Booster.LikeBoosters.Plus30:
                                 {
-                                    _likesContainer.CreateLike(30);
+                                    _likesContainer.CreateLikes(30);
                                 }
                                 break;
                             case Booster.LikeBoosters.Plus40:
                                 {
-                                    _likesContainer.CreateLike(40);
+                                    _likesContainer.CreateLikes(40);
                                 }
                                 break;
                             case Booster.LikeBoosters.x1:
@@ -121,13 +165,13 @@ public class LikeGroupController : MonoBehaviour
                             case Booster.LikeBoosters.x2:
                                 {
                                     var count = _likesContainer.LikesCount;
-                                    _likesContainer.CreateLike(count);
+                                    _likesContainer.CreateLikes(count);
                                 }
                                 break;
                             case Booster.LikeBoosters.x3:
                                 {
                                     var count = _likesContainer.LikesCount * 2;
-                                    _likesContainer.CreateLike(count);
+                                    _likesContainer.CreateLikes(count);
                                 }
                                 break;
                             default:

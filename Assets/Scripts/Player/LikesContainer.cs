@@ -7,115 +7,128 @@ using GameEvents;
 
 public class LikesContainer : MonoBehaviour
 {
+    #region CONST
     private const int NormalSpawnRadius = 1;
     private const float SpawnRadiusScale = 0.01f;
-    private const int SecondsToGoFight = 1;
-    private const int SecondsToGoBase = 1;
-    private const float HalfWay = 0.5f;
+    private const float SeparateSpawnRadiusScale = 0.1f;
+    private const int MinSeparateLikesCount = 100;
+    private const float SeparateLikeSize = .4f;
+    #endregion
 
+    #region FIELDS
     [SerializeField] private Text _likeCountText;
+    [SerializeField] private Canvas _likeCountCanvas;
+    private int _likesCount;
+    public int LikesCount
+    {
+        get
+        {
+            return _likesCount;
+        }
+        private set
+        {
+            _likesCount = value;
+            _likeCountText.text = _likesCount.ToString();
+        }
+    }
 
-    private List<LikeController> _likes;
-    public int LikesCount => _likes.Count;
+    private List<LikeController> _instantiatedLikes;
     private WaitForSeconds _waitForSeconds = new WaitForSeconds(Constants.CoroutineUltraFastProcess);
     private OnEndGameEvent _onEndGameEvent = new OnEndGameEvent();
+    private LikeController _mainLike;
+    private Vector3 _separateOffset = Vector3.zero;
 
-    #region TEST
-    private LikeController _testLikeController;
+
     #endregion
+
+    #region Awake/Start
 
     private void Awake()
     {
-        PrepareLikesContainer();
-        EventsAgregator.Subscribe<OnLikeEnterEnemyEvent>(OnLikeEnterEnemyHandler);
+        _instantiatedLikes = new List<LikeController>();
         EventsAgregator.Subscribe<OnEnemyGroupDieEvent>(OnEnemyGroupDieHandler);
+        EventsAgregator.Subscribe<OnLikePhotoEvent>(OnLikePhotoHandler);
     }
 
+
+    #endregion
+
+    #region EVENT BASED
     private void OnEnemyGroupDieHandler(object sender, OnEnemyGroupDieEvent data)
     {
         MoveToBase();
     }
 
-    private void OnLikeEnterEnemyHandler(object sender, OnLikeEnterEnemyEvent data)
+    private void OnLikePhotoHandler(object sender, OnLikePhotoEvent data)
     {
-        RemoveLike(data.dislikeControllerCount);
+        var randVal = Random.Range(0, _instantiatedLikes.Count);
+        _instantiatedLikes[randVal].transform.SetParent(PooledSkinManager.PooledObjectRoot);
+        _instantiatedLikes[randVal].gameObject.SetActive(false);
+        LikesCount--;
+        _instantiatedLikes.RemoveAt(randVal);
+        if (LikesCount == 0)
+        {
+            GameStatesHandler.SetState(States.Win);
+        }
+    }
+    #endregion
+
+    #region CREATE LIKES
+
+    public void CreateLikes(int count) 
+    {
+        StartCoroutine(CreateLikesCoroutine(count)); 
     }
 
-    private void PrepareLikesContainer() 
+    public void CreateFirstLike() 
     {
-        _likes = new List<LikeController>();
+        _mainLike = Factory.AbstractFactory.CreateLikeController(Factory.LikeSkin.Common);
+        LikesCount++;
+        _mainLike.transform.SetParent(transform);
+        _mainLike.transform.localPosition = Vector3.zero;
+        _mainLike.transform.localScale = Vector3.one;        
     }
 
-    public void CreateLike(int count) 
-    {
-        StartCoroutine(CreateLikes(count)); 
-    }
-
-    public void CreateLike() 
-    {
-        _testLikeController = Factory.AbstractFactory.CreateLikeController(Factory.LikeSkin.Common);
-        _likes.Add(_testLikeController);
-        _testLikeController.transform.SetParent(transform);
-        _testLikeController.transform.localPosition = Vector3.zero;
-        _testLikeController.transform.localScale = Vector3.one;
-        _likeCountText.text = LikesCount.ToString();
-        
-    }
-
-    private IEnumerator CreateLikes(int count) 
+    private IEnumerator CreateLikesCoroutine(int count) 
     {
         for (int i = 0; i < count; i++)
         {
-            var like = new LikeController();
-            _likes.Add(like);
-            _testLikeController.transform.localScale = Vector3.one * (NormalSpawnRadius + (LikesCount * SpawnRadiusScale));
-            _likeCountText.text = LikesCount.ToString();
+             LikesCount++;
+            _mainLike.transform.localScale = Vector3.one * (NormalSpawnRadius + (LikesCount * SpawnRadiusScale));
             yield return _waitForSeconds;
-        }
-       
+        }       
     }
 
+    #endregion
+
+    #region REMOVE LIKES
     private IEnumerator RemoveLikes(int count) 
     {
-        for (int i = 0; i < _likes.Count; i++)
+        if (count >= LikesCount)
         {
-            if (LikesCount > 1)
+            var cnt = LikesCount - 1;
+            for (int i = 0; i < cnt; i++)
             {
-                _likes.RemoveAt(1);
-                _testLikeController.transform.localScale = Vector3.one * (NormalSpawnRadius + (LikesCount * SpawnRadiusScale));
-                _likeCountText.text = LikesCount.ToString();
+                LikesCount--;
+                _mainLike.transform.localScale = Vector3.one * (NormalSpawnRadius + (LikesCount * SpawnRadiusScale));
+                yield return _waitForSeconds;
             }
-            else
-            {
-                _testLikeController.gameObject.SetActive(false);
-                _testLikeController.transform.SetParent(PooledSkinManager.PooledObjectRoot);
-                _likeCountText.text = LikesCount.ToString();
+            LikesCount--;
+            _mainLike.gameObject.SetActive(false);
+            _mainLike.transform.SetParent(PooledSkinManager.PooledObjectRoot);
 
-                EventsAgregator.Post<OnEndGameEvent>(this, _onEndGameEvent);
-                GameModeHandler.SetState(States.Lose);
-                break;
-            }
-
-            yield return _waitForSeconds;
+            EventsAgregator.Post<OnEndGameEvent>(this, _onEndGameEvent);
+            GameStatesHandler.SetState(States.Lose);            
         }
-
-        
-
-    }
-
-
-    //Do the coroutine
-    public void MoveToBase() 
-    {        
-        var doMove = _testLikeController.transform.DOMove(transform.position, SecondsToGoBase);
-        DOTween.Sequence().AppendInterval(SecondsToGoBase)
-            .OnComplete(Method);
-    }
-
-    private void Method() 
-    {
-        GameModeHandler.SetState(States.Run);
-        Debug.Log("Method");
+        else
+        {
+            for (int i = 0; i < count; i++)
+            {
+                LikesCount--;
+                _mainLike.transform.localScale = Vector3.one * (NormalSpawnRadius + (LikesCount * SpawnRadiusScale));
+                yield return _waitForSeconds;
+            }
+        }
     }
 
     public void RemoveLike(int count) 
@@ -123,13 +136,108 @@ public class LikesContainer : MonoBehaviour
         StartCoroutine(RemoveLikes(count));
     }
 
+    #endregion
 
-    public void SendToFight(DislikeContainer dislikeContainer) 
+    #region INSTANIATE SEPARATED LIKES
+
+    public void SeparateMainLike() 
     {
-        var averagePoint = Vector3.Lerp(transform.position, dislikeContainer.transform.position, HalfWay);
-        dislikeContainer.SendToFight(averagePoint);
+        if (_mainLike != null)
+        {
+            GameStatesHandler.SetState(States.NullState);
+            _likeCountCanvas.enabled = false;
 
-        _testLikeController.transform.DOMove(averagePoint, SecondsToGoFight); 
+            _mainLike.PlaySeparateAnimation();
+            DOTween.Sequence().AppendInterval(Constants.SecondsToSeparateLike).OnComplete(() =>
+            {
+                _mainLike.gameObject.SetActive(false);
+                _mainLike.transform.SetParent(PooledSkinManager.PooledObjectRoot);
+                _mainLike = null;
+                SeparateLikesSphere();
+                GameStatesHandler.SetState(States.Finish);                
+            });
+        }
+
     }
 
+    private void SeparateLikesSphere() 
+    {
+
+        if (LikesCount > MinSeparateLikesCount)
+        {
+            for (int i = 0; i < LikesCount; i++)
+            {
+                var controller = Factory.AbstractFactory.CreateLikeController(Factory.LikeSkin.Common);
+                _instantiatedLikes.Add(controller);
+                controller.transform.SetParent(transform);
+                _separateOffset = Random.onUnitSphere * (NormalSpawnRadius + (LikesCount * SeparateSpawnRadiusScale));
+                _separateOffset.z = 0f;
+                _separateOffset.x *= 15f / (float)LikesCount;
+                _separateOffset.y *= 15f / (float)LikesCount;
+                _separateOffset.y += 1.5f;
+                controller.transform.localPosition = _separateOffset;
+                controller.transform.localScale = Vector3.one * SeparateLikeSize;
+                controller.transform.DOMove(transform.position + _separateOffset, Constants.SecondsToSeparateLike);
+                if (controller.TryGetComponent(out SphereCollider sphereCollider))
+                {
+                    sphereCollider.enabled = true;
+                }                
+            }
+        }
+        else
+        {
+            for (int i = 0; i < LikesCount; i++)
+            {
+                var controller = Factory.AbstractFactory.CreateLikeController(Factory.LikeSkin.Common);
+                _instantiatedLikes.Add(controller);
+                controller.transform.SetParent(transform);
+                _separateOffset = Random.onUnitSphere * (NormalSpawnRadius + (LikesCount * SeparateSpawnRadiusScale));
+                _separateOffset.z = 0f;
+                _separateOffset.x *= 15f / (float)LikesCount;
+                _separateOffset.y *= 15f / (float)LikesCount;
+                _separateOffset.y += 1.5f;
+                controller.transform.localPosition = _separateOffset;
+                controller.transform.localScale = Vector3.one * SeparateLikeSize;
+                controller.transform.DOMove(transform.position + _separateOffset, Constants.SecondsToSeparateLike);
+                if (controller.TryGetComponent(out SphereCollider sphereCollider))
+                {
+                    sphereCollider.enabled = true;
+                }
+            }
+        }
+    }
+
+    #endregion
+
+    #region MOVEMENT LOGIC
+
+    public void MoveToFight(Vector3 point)
+    {
+        _mainLike.transform.DOMove(point, Constants.SecondsToGoFight);
+    }
+
+    public void MoveToBase()
+    {
+        _mainLike.transform.DOMove(transform.position, Constants.SecondsToGoBase)
+        .OnComplete(() =>
+        {
+            GameStatesHandler.SetState(States.Run);
+        });
+    }
+
+    public void MoveSeparateLikes(float value) 
+    {
+        
+    }
+
+    #endregion
+
+    #region UNITY EVENTS
+
+    private void OnDestroy()
+    {
+        StopAllCoroutines();
+    }
+
+    #endregion
 }

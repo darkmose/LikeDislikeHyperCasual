@@ -12,7 +12,7 @@ public class LevelController : MonoBehaviour
     private Transform _player;
     private float _distance;
     private bool _isFinished = false;
-    private WaitForSeconds _waitForSecondsSlow = new WaitForSeconds(Constants.CoroutineSlowProcess);
+    private WaitForFixedUpdate _waitForFixedUpdate = new WaitForFixedUpdate();
     private OnLevelProgressChangedEvent _onLevelProgressChangedEvent = new OnLevelProgressChangedEvent();
     private OnLevelFinishEvent _onLevelFinish = new OnLevelFinishEvent();
     private void Awake()
@@ -58,7 +58,7 @@ public class LevelController : MonoBehaviour
     {
         while (!_isFinished)
         {
-            yield return _waitForSecondsSlow;
+            yield return _waitForFixedUpdate;
             _onLevelProgressChangedEvent.LevelProgress = 1f - (_finishPosZ - _player.position.z) / _distance;
             EventsAgregator.Post<OnLevelProgressChangedEvent>(this, _onLevelProgressChangedEvent);
             if (_finishPosZ < _player.position.z)
@@ -66,7 +66,7 @@ public class LevelController : MonoBehaviour
                 _onLevelProgressChangedEvent.LevelProgress = 1f;
                 EventsAgregator.Post<OnLevelFinishEvent>(this, _onLevelFinish);
                 _isFinished = true;
-                GameModeHandler.SetState(States.Finish);
+                GameStatesHandler.SetState(States.Finish);
             }
         }
     }

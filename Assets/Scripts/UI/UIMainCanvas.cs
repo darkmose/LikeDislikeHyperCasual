@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GameEvents;
 using System;
+using DG.Tweening;
 
 public class UIMainCanvas : MonoBehaviour
 {
@@ -13,39 +14,30 @@ public class UIMainCanvas : MonoBehaviour
 
     private void Awake()
     {
-        EventsAgregator.Subscribe<OnGameModeChangedEvent>(OnGamemodeChangedHandler);
+        EventsAgregator.Subscribe<OnGameStateChangedEvent>(OnGamemodeChangedHandler);
     }
 
-    private void OnGamemodeChangedHandler(object sender, OnGameModeChangedEvent data)
+    private void OnGamemodeChangedHandler(object sender, OnGameStateChangedEvent data)
     {
-        switch (GameModeHandler.CurrentState)
+        switch (GameStatesHandler.CurrentState)
         {
             case States.Entry:
-                _tutorialPanel.SetActive(true);
-                _controlPanel.SetActive(false);
-                _loseGamePanel.SetActive(false);
-                _winGamePanel.SetActive(false);
+                EntryAction();
                 break;
             case States.Run:
-                _tutorialPanel.SetActive(false);
-                _controlPanel.SetActive(true);
-                _loseGamePanel.SetActive(false);
-                _winGamePanel.SetActive(false);
+                RunAction();
                 break;
             case States.Fight:
-                //Do nothing
+                FightAction();
                 break;
             case States.Finish:
-                _winGamePanel.SetActive(true);
-                _tutorialPanel.SetActive(false);
-                _controlPanel.SetActive(false);
-                _loseGamePanel.SetActive(false);
+                //Do nothing
                 break;
             case States.Lose:
-                _winGamePanel.SetActive(false);
-                _tutorialPanel.SetActive(false);
-                _controlPanel.SetActive(false);
-                _loseGamePanel.SetActive(true);
+                LoseAction();
+                break;
+            case States.Win:
+                WinAction();
                 break;
             default:
                 //Do nothing
@@ -53,4 +45,42 @@ public class UIMainCanvas : MonoBehaviour
         }
     }
 
+    private void WinAction()
+    {
+        DOTween.Sequence().AppendInterval(.5f).OnComplete(() =>
+        {
+            _tutorialPanel.SetActive(false);
+            _controlPanel.SetActive(false);
+            _loseGamePanel.SetActive(false);
+            _winGamePanel.SetActive(true);
+        });
+
+    }
+
+    private void RunAction() 
+    {
+        _tutorialPanel.SetActive(false);
+        _controlPanel.SetActive(true);
+        _loseGamePanel.SetActive(false);
+        _winGamePanel.SetActive(false);
+    }
+
+    private void LoseAction() 
+    {
+        _winGamePanel.SetActive(false);
+        _tutorialPanel.SetActive(false);
+        _controlPanel.SetActive(false);
+        _loseGamePanel.SetActive(true);
+    }
+    private void FightAction() 
+    {
+        //Nothing yet
+    }
+    private void EntryAction() 
+    {
+        _tutorialPanel.SetActive(true);
+        _controlPanel.SetActive(false);
+        _loseGamePanel.SetActive(false);
+        _winGamePanel.SetActive(false);
+    }
 }
