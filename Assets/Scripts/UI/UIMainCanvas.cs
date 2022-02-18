@@ -39,10 +39,18 @@ public class UIMainCanvas : MonoBehaviour
             case States.Win:
                 WinAction();
                 break;
+            case States.Separate:
+                SeparateAction();
+                break;
             default:
                 //Do nothing
                 break;
         }
+    }
+
+    private void SeparateAction()
+    {
+        _controlPanel.SetActive(false);
     }
 
     private void WinAction()
@@ -82,5 +90,11 @@ public class UIMainCanvas : MonoBehaviour
         _controlPanel.SetActive(false);
         _loseGamePanel.SetActive(false);
         _winGamePanel.SetActive(false);
+    }
+
+
+    private void OnDestroy()
+    {
+        EventsAgregator.Unsubscribe<OnGameStateChangedEvent>(OnGamemodeChangedHandler);
     }
 }

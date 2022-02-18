@@ -34,8 +34,11 @@ public class ObjectPooler
         {
             foreach (var obj in pool.Value)
             {
-                obj.SetActive(false);
-                obj.transform.SetParent(rootOfPooledGameobjects);
+                if (!System.Object.ReferenceEquals(obj.transform.parent, rootOfPooledGameobjects))
+                {
+                    obj.SetActive(false);
+                    obj.transform.SetParent(rootOfPooledGameobjects);
+                }
             }
         }
     }

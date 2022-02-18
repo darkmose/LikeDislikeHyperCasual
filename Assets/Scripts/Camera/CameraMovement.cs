@@ -29,7 +29,7 @@ public class CameraMovement : MonoBehaviour
         switch (GameStatesHandler.CurrentState) //Entry Point
         {
             case States.Separate:
-                var pos = transform.position;
+                var pos = this.transform.position;
                 pos.y += 1f;
                 pos.z -= 2f;
                 var rotate = new Vector3(15, 0, 0);
@@ -45,6 +45,15 @@ public class CameraMovement : MonoBehaviour
         {
             _currentAction = NullAction;
         }
+    }
+    #endregion
+
+    #region UNITY EVENTS
+
+
+    private void OnDestroy()
+    {
+        EventsAgregator.Unsubscribe<OnGameStateChangedEvent>(OnGameModeChangedHandler);
     }
 
     #endregion

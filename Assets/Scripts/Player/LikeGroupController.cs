@@ -221,6 +221,11 @@ public class LikeGroupController : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        EventsAgregator.Unsubscribe<OnGameStateChangedEvent>(OnGameModeChangedHandler);
+    }
+
     #endregion
 
     #region UPDATES

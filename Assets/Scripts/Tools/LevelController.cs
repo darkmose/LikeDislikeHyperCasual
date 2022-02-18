@@ -35,8 +35,10 @@ public class LevelController : MonoBehaviour
             PlayerPrefs.SetInt(Constants.PrefsLevelProgressKey, CurrentLevel);
             var level = Instantiate(_levelList[CurrentLevel]);
             level.transform.SetParent(transform);
+            var playerObject = level.transform.Find("LikesGroup");
+            Debug.Log($"[LoadNextLevel] playerObject is: {playerObject.transform.position}");
 
-            PrepareLevelProgressCheck();
+            PrepareLevelProgressCheck(level);
             StartCoroutine(CheckLevelProgress());
 
             _onNextLevelEvent.CurrentLevelIndex = CurrentLevel;
@@ -50,7 +52,7 @@ public class LevelController : MonoBehaviour
 
     }
 
-    private void LoadStartLevel()
+    public void LoadStartLevel()
     {
         if (!PlayerPrefs.HasKey(Constants.PrefsLevelProgressKey))
         {
@@ -60,27 +62,33 @@ public class LevelController : MonoBehaviour
 
         var level = Instantiate(_levelList[CurrentLevel]);
         level.transform.SetParent(transform);
-        PrepareLevelProgressCheck();
+
+        PrepareLevelProgressCheck(level);
         StartCoroutine(CheckLevelProgress());
 
         _onLevelProgressChangedEvent.LevelProgress = 0f;
         EventsAgregator.Post<OnLevelProgressChangedEvent>(this, _onLevelProgressChangedEvent);
     }
 
-    private void PrepareLevelProgressCheck() 
+    private void PrepareLevelProgressCheck(GameObject level) 
     {
-        var playerObject = GameObject.FindGameObjectWithTag(Constants.PlayerTagName);
-        if (!System.Object.ReferenceEquals(playerObject, null))
+        var startFinishHandler = level.GetComponent<StartFinishHandler>();
+
+        var playerTransform = startFinishHandler._playerPoint;
+
+        Debug.Log($"playerObject pos is: {playerTransform.transform.position}");
+
+        if (!System.Object.ReferenceEquals(playerTransform, null))
         {
-            _startPosZ = playerObject.transform.position.z;
-            _player = playerObject.transform;
-            Debug.Log("PrepareLevelProgressCheck OK");
+            _startPosZ = playerTransform.transform.position.z;
+            _player = playerTransform;
+            Debug.Log($"[PrepareLevelProgressCheck] StartPosZ: {_startPosZ}");
         }
-        var finishObj = GameObject.FindGameObjectWithTag(Constants.FinishTag);
-        if (!System.Object.ReferenceEquals(finishObj, null))
+        var finishTransform = startFinishHandler._finishPoint;
+        if (!System.Object.ReferenceEquals(finishTransform, null))
         {
-            _finishPosZ = finishObj.transform.position.z;
-            Debug.Log("PrepareLevelProgressCheck OK");
+            _finishPosZ = finishTransform.position.z;
+            Debug.Log($"[PrepareLevelProgressCheck] FinishPosZ: {_finishPosZ}");
         }
         _distance = _finishPosZ - _startPosZ;
         Debug.Log($"Distance: {_distance}");

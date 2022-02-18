@@ -71,6 +71,7 @@ public class LikesContainer : MonoBehaviour
             GameStatesHandler.SetState(States.Win);
         }
     }
+
     #endregion
 
     #region CREATE LIKES
@@ -234,6 +235,8 @@ public class LikesContainer : MonoBehaviour
     private void OnDestroy()
     {
         StopAllCoroutines();
+        EventsAgregator.Unsubscribe<OnEnemyGroupDieEvent>(OnEnemyGroupDieHandler);
+        EventsAgregator.Unsubscribe<OnLikePhotoEvent>(OnLikePhotoHandler);
     }
 
     #endregion

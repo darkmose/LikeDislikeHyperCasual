@@ -2492,7 +2492,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
+  m_Intensity: 1.2
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -5335,8 +5335,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _levelList:
-  - {fileID: 3221179871865679720, guid: c3200a326e2e6f240a59cadf5c42c927, type: 3}
+  - {fileID: 3221179871865679720, guid: d918af8341b44b445b060f1a46b84759, type: 3}
+  - {fileID: 3221179871865679720, guid: 53e0523e36b2e5e47a080985d1b4d333, type: 3}
+  - {fileID: 3221179871865679720, guid: fab08f1cf2e820146a8a555d02c7e0fe, type: 3}
   - {fileID: 8065769831051674392, guid: 4c9669c783285af4d9d7bfce1d06be10, type: 3}
+  - {fileID: 3221179871865679720, guid: c3200a326e2e6f240a59cadf5c42c927, type: 3}
 --- !u!1 &1632399848
 GameObject:
   m_ObjectHideFlags: 0

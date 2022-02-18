@@ -43,4 +43,10 @@ public class UIGame : MonoBehaviour
         _progressBarValue.fillAmount = data.LevelProgress;
     }
 
+
+    private void OnDestroy()
+    {
+        EventsAgregator.Unsubscribe<OnLevelProgressChangedEvent>(OnLevelProgressChangedHandler);
+        EventsAgregator.Unsubscribe<OnNextLevelEvent>(OnNextLevelHandler);
+    }
 }
